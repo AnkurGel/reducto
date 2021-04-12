@@ -1,0 +1,14 @@
+Environment: "development"
+ListenAddr: ':8081'
+BaseURL: 'http://localhost:8080/'
+Mysql:
+  host: '127.0.0.1'
+  port: 3306
+  username: 'root'
+  password: ''
+  database: 'reducto'
+  pool: 150
+Redis:
+  address: 'localhost:6379'
+  db: 10
+MaxRetries: 20

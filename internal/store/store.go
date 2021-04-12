@@ -56,7 +56,7 @@ func (s *Store) SetupModels() {
 
 // CreateByLongURL interacts with database to create short URL
 // and returns URL object or error
-func (s *Store) CreateByLongURL(longURL string, custom string) (*models.URL, error) {
+func (s *Store) CreateByLongURL(longURL string) (*models.URL, error) {
 	var u models.URL
 	var shortURL *models.URL
 	var err error

@@ -31,7 +31,7 @@ func main() {
 	<-quit
 	log.Info("Exiting from reducto-keygen")
 }
-
+const maxKeyPoolLength = 50000
 func addKeysInRedis(redisClient *redisdb.Redis, keysCountToAdd chan int64, resumePoller chan bool) {
 	for {
 		var i int64 = 0
@@ -53,9 +53,9 @@ func checkPool(redisClient *redisdb.Redis, keysCountToAdd chan int64, resumePoll
 		if err != nil {
 			panic(err)
 		}
-		if length < 5000 {
-			log.Info("Sending signal to add ", 5000-length, " values")
-			keysCountToAdd <- 5000 - length
+		if length < maxKeyPoolLength {
+			log.Info("Sending signal to add ", maxKeyPoolLength-length, " values")
+			keysCountToAdd <- maxKeyPoolLength - length
 		} else {
 			keysCountToAdd <- 0
 		}

@@ -56,15 +56,35 @@ func (s *Store) SetupModels() {
 
 // CreateByLongURL interacts with database to create short URL
 // and returns URL object or error
-func (s *Store) CreateByLongURL(longURL string) (*models.URL, error) {
+func (s *Store) CreateByLongURL(longURL string, customSlug string) (*models.URL, error) {
 	var u models.URL
 	var shortURL *models.URL
 	var err error
 	var shortHash string
 	var retries uint8 = 0
-	if result := s.Db.Where("original = ?", longURL).First(&u); result.Error != nil {
+	var lenCustomSlug int = len(customSlug)
+	if lenCustomSlug > 0 {
+		if lenCustomSlug > 15 {
+			return nil, errors.New("length for custom URL cannot be more than 15 characters")
+		}
+		customExists := s.Db.Where("short = ?", customSlug).First(&u)
+		if customExists.Error == nil {
+			if u.Original == longURL {
+				return &u, nil
+			}
+			return nil, fmt.Errorf("custom slug %s is already taken", customSlug)
+		}
+	}
+
+	if result := s.Db.Where("original = ?", longURL).First(&u); result.Error != nil || lenCustomSlug > 0 {
 		log.Error(result.Error)
-		shortHash, err = s.redisClient.GetKey()
+		if lenCustomSlug > 0 {
+			shortHash, err = customSlug, nil
+			retries = uint8(viper.GetUint32("MaxRetries"))
+		} else {
+			shortHash, err = s.redisClient.GetKey()
+		}
+
 		if err != nil {
 			return nil, err
 		}

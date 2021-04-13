@@ -36,14 +36,15 @@ func rootHandler(c *gin.Context) {
 func shortenV1Handler(c *gin.Context) {
 	s := c.MustGet("store").(*store.Store)
 	longUrl := c.PostForm("url")
-	result, e := s.CreateByLongURL(longUrl)
+	customSlugRequested := c.PostForm("custom")
+	result, e := s.CreateByLongURL(longUrl, customSlugRequested)
 	if e != nil {
 		errorMessage := fmt.Sprintf("Error in shortening %s : %s", longUrl, e)
 		log.Error(errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": errorMessage})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"shortUrl": result.Short, "longUrl": result.Original})
+	c.JSON(http.StatusCreated, gin.H{"shortUrl": result.ShortURL(), "longUrl": result.Original})
 }
 
 func longV1Handler(c *gin.Context) {

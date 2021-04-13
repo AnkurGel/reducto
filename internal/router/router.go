@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strings"
 )
 
 type Router struct {
@@ -17,14 +18,15 @@ func InitRouter(s *store.Store) *Router {
 	r := gin.Default()
 	r.Use(dbMiddleware(s))
 
+	r.LoadHTMLGlob("templates/*")
 	r.GET("/", rootHandler)
+	r.GET("/:shortUrl/preview", previewHandler)
 	r.GET("/:shortUrl", longV1Handler)
 	api := r.Group("/api")
 	v1 := api.Group("/v1")
 	{
 		v1.POST("/shorten", shortenV1Handler)
 	}
-
 
 	return &Router{r}
 }
@@ -50,6 +52,10 @@ func shortenV1Handler(c *gin.Context) {
 func longV1Handler(c *gin.Context) {
 	s := c.MustGet("store").(*store.Store)
 	shortUrl := c.Param("shortUrl")
+	if  strings.HasSuffix(shortUrl, "+") {
+		previewHandler(c)
+		return
+	}
 	url, err := s.FindByShortURL(shortUrl)
 	if err != nil {
 		errorMessage := fmt.Sprintf("Error in getSlug for %s: %s", shortUrl, err)
@@ -58,6 +64,19 @@ func longV1Handler(c *gin.Context) {
 		return
 	}
 	c.Redirect(http.StatusMovedPermanently, url.Original)
+}
+
+func previewHandler(c *gin.Context) {
+	s := c.MustGet("store").(*store.Store)
+	shortUrl := c.Param("shortUrl")
+	url, err := s.FindByShortURL(shortUrl)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error in getSlug for %s: %s", shortUrl, err)
+		log.Error(errorMessage)
+		c.HTML(http.StatusNotFound, "404.html", gin.H{})
+		return
+	}
+	c.HTML(http.StatusNotFound, "preview.tmpl", gin.H{"original": url.Original, "shortUrl": url.ShortURL()})
 }
 
 func dbMiddleware(s *store.Store) gin.HandlerFunc {

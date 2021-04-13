@@ -17,14 +17,14 @@ func InitRouter(s *store.Store) *Router {
 	r := gin.Default()
 	r.Use(dbMiddleware(s))
 
-
+	r.GET("/", rootHandler)
+	r.GET("/:shortUrl", longV1Handler)
 	api := r.Group("/api")
 	v1 := api.Group("/v1")
 	{
-		v1.GET("/", rootHandler)
 		v1.POST("/shorten", shortenV1Handler)
 	}
-	r.GET("/:shortUrl", longV1Handler)
+
 
 	return &Router{r}
 }

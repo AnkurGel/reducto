@@ -65,7 +65,7 @@ func (s *Store) CreateByLongURL(longURL string, customSlug string) (*models.URL,
 	var lenCustomSlug int = len(customSlug)
 	if lenCustomSlug > 0 {
 		if lenCustomSlug > 15 {
-			return nil, errors.New("length for custom URL cannot be more than 15 characters")
+			return nil, fmt.Errorf("length for custom URL cannot be more than 15 characters")
 		}
 		customExists := s.Db.Where("short = ?", customSlug).First(&u)
 		if customExists.Error == nil {

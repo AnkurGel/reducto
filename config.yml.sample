@@ -1,5 +1,5 @@
 Environment: "development"
-ListenAddr: ':8081'
+ListenAddr: ':8080'
 BaseURL: 'http://localhost:8080/'
 Mysql:
   host: '127.0.0.1'

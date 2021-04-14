@@ -121,3 +121,7 @@ func (s *Store) FindByShortURL(shortURL string) (*models.URL, error) {
 	}
 	return &u, nil
 }
+
+func (s *Store) IsHostBanned(url string) (bool, error) {
+	return s.redisClient.IsHostBanned(url)
+}

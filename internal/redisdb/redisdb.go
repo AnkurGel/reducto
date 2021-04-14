@@ -12,6 +12,7 @@ type Redis struct {
 
 var Ctx = context.TODO()
 var keySet = "reductoKeySet"
+var urlBannedSet = "urlBannedSet"
 
 // Creates new redis instance with given address
 func New(address string, db int) (*Redis, error) {
@@ -47,6 +48,15 @@ func (r *Redis) KeyPoolSize() (int64, error) {
 	val, err := r.SCard(Ctx, keySet).Result()
 	if err != nil {
 		return -1, err
+	}
+	return val, nil
+}
+
+// Checks URL in list of banned hosts
+func (r *Redis) IsHostBanned(url string) (bool, error) {
+	val, err := r.SIsMember(Ctx, urlBannedSet, url).Result()
+	if err != nil {
+		return false, err
 	}
 	return val, nil
 }

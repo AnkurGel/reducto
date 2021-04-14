@@ -41,7 +41,7 @@ func shortenV1Handler(c *gin.Context) {
 	customSlugRequested := c.PostForm("custom")
 	sanitizedLongUrl, error := util.NormalizeURL(longUrl, s)
 	if error != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": error})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": error.Error()})
 		return
 	}
 	result, e := s.CreateByLongURL(sanitizedLongUrl, customSlugRequested)

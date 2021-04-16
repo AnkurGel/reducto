@@ -52,6 +52,7 @@ func (s *Store) EstablishConnection() {
 // SetupModels setups and migrates all the models
 func (s *Store) SetupModels() {
 	s.Db.AutoMigrate(&models.URL{})
+	s.Db.AutoMigrate(&models.Visit{})
 }
 
 // CreateByLongURL interacts with database to create short URL
@@ -120,6 +121,17 @@ func (s *Store) FindByShortURL(shortURL string) (*models.URL, error) {
 		return nil, result.Error
 	}
 	return &u, nil
+}
+
+func (s *Store) IncreaseVisitForUrl(url *models.URL, clientIP string) (*models.Visit, error){
+	visit := models.Visit{
+		IP: clientIP,
+		UrlID: url.ID,
+	}
+	if result := s.Db.Create(&visit); result.Error != nil {
+		return nil, errors.New("couldn't add visit. Something went wrong")
+	}
+	return &visit, nil
 }
 
 func (s *Store) IsHostBanned(url string) (bool, error) {

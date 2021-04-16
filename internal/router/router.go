@@ -66,6 +66,10 @@ func longV1Handler(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": errorMessage})
 		return
 	}
+	if _, err = s.IncreaseVisitForUrl(url, c.ClientIP()); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err})
+		return
+	}
 	c.Redirect(http.StatusMovedPermanently, url.Original)
 }
 
@@ -76,6 +80,10 @@ func previewHandler(c *gin.Context) {
 	if err != nil {
 		errorMessage := fmt.Sprintf("Error in getSlug for %s: %s", shortUrl, err)
 		c.HTML(http.StatusNotFound, "404.html", gin.H{"error": errorMessage})
+		return
+	}
+	if _, err = s.IncreaseVisitForUrl(url, c.ClientIP()); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err})
 		return
 	}
 	c.HTML(http.StatusNotFound, "preview.tmpl", gin.H{"original": url.Original, "shortUrl": url.ShortURL()})

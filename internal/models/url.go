@@ -11,6 +11,7 @@ type URL struct {
 	Short    string `gorm:"type:VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_bin;unique"`
 	Original string `gorm:"type:varchar(2048);index:orig"`
 	Retries  uint8
+	Visits   []Visit
 }
 
 // ShortURL gives http URL string form for a short slug

@@ -71,6 +71,12 @@ Retrieves long URL and redirects
       **Content:** `{"error":"URLValidationError: URL Domain is banned."}`
 
 ### Installation
+#### Via Docker:
+```
+git clone git@github.com:AnkurGel/reducto.git
+docker-compose up
+$> curl --location --request POST 'http://localhost:8080/api/v1/shorten' --form 'url="https://github.com/AnkurGel/reducto"'
+```
 
 ### Development
 * `cp config.yml.sample config.yml`

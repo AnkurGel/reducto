@@ -1,0 +1,13 @@
+Environment: "production"
+ListenAddr: ':8080'
+BaseURL: 'http://localhost:8080/'
+Postgres:
+  host: 'postgres'
+  port: 5432
+  username: 'postgres'
+  password: 'password'
+  database: 'reducto'
+Redis:
+  address: 'redis:6379'
+  db: 10
+MaxRetries: 20

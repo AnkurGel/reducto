@@ -1,13 +1,12 @@
 Environment: "development"
 ListenAddr: ':8080'
 BaseURL: 'http://localhost:8080/'
-Mysql:
-  host: '127.0.0.1'
-  port: 3306
-  username: 'root'
+Postgres:
+  host: 'localhost'
+  username: 'postgres'
   password: ''
   database: 'reducto'
-  pool: 150
+  port: 5432
 Redis:
   address: 'localhost:6379'
   db: 10

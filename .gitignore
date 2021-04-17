@@ -1,3 +1,6 @@
 log/
 config.yml
 .idea/
+main
+server
+keygen

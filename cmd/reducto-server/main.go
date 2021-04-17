@@ -22,5 +22,7 @@ func main() {
 	}
 	s := store.InitStoreWithCache(redisClient)
 	r := router.InitRouter(s)
-	r.Engine.Run(":8081")
+	if err := r.Engine.Run(viper.GetString("ListenAddr")); err != nil {
+		log.Fatal("Couldn't start the server - ", err)
+	}
 }

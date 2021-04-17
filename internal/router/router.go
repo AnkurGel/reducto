@@ -39,14 +39,14 @@ func shortenV1Handler(c *gin.Context) {
 	s := c.MustGet("store").(*store.Store)
 	longUrl := c.PostForm("url")
 	customSlugRequested := c.PostForm("custom")
-	sanitizedLongUrl, error := util.NormalizeURL(longUrl, s)
-	if error != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": error.Error()})
+	sanitizedLongUrl, err := util.NormalizeURL(longUrl, s)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	result, e := s.CreateByLongURL(sanitizedLongUrl, customSlugRequested)
-	if e != nil {
-		errorMessage := fmt.Sprintf("Error in shortening %s : %s", longUrl, e)
+	result, err := s.CreateByLongURL(sanitizedLongUrl, customSlugRequested)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error in shortening %s : %s", longUrl, err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": errorMessage})
 		return
 	}
